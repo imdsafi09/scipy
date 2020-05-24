@@ -1,4 +1,6 @@
 # SciPy imports.
+import os
+
 import numpy as np
 from numpy import pi
 from numpy.testing import (assert_array_almost_equal,
@@ -471,4 +473,21 @@ class TestODR(object):
         odr_obj = ODR(data, quadratic)
         output = odr_obj.run()
         assert_array_almost_equal(output.beta, [1.0, 2.0, 3.0])
+
+    def test_output_file_overwrite(self):
+        """
+        Verify fix for gh-1892
+        """
+        def func(b, x):
+            return b[0] + b[1] * x
+
+        p = Model(func)
+        data = Data(np.arange(10), 12 * np.arange(10))
+        ODR(data, p, beta0=[0.1, 13], errfile="error.dat", rptfile='report.dat',
+            ).run()
+        ODR(data, p, beta0=[0.1, 13], errfile="error.dat", rptfile='report.dat',
+            overwrite=True).run()
+        # remove output files for clean up
+        os.remove("error.dat")
+        os.remove("report.dat")
 
