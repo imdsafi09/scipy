@@ -163,6 +163,36 @@ class BinnedStatistic(Benchmark):
             [self.inp[0], self.inp[1]], self.inp[2], statistic="std",
             bins=[self.subbin_x_edges, self.subbin_y_edges])
 
+    def time_binned_statistic_dd_count(self):
+        stats.binned_statistic_dd(
+            [self.inp[0], self.inp[1]], self.inp[2], statistic="count",
+            bins=[self.subbin_x_edges, self.subbin_y_edges])
+
+    def time_binned_statistic_dd_sum(self):
+        stats.binned_statistic_dd(
+            [self.inp[0], self.inp[1]], self.inp[2], statistic="sum",
+            bins=[self.subbin_x_edges, self.subbin_y_edges])
+
+    def time_binned_statistic_dd_mean(self):
+        stats.binned_statistic_dd(
+            [self.inp[0], self.inp[1]], self.inp[2], statistic="mean",
+            bins=[self.subbin_x_edges, self.subbin_y_edges])
+
+    def time_binned_statistic_dd_min(self):
+        stats.binned_statistic_dd(
+            [self.inp[0], self.inp[1]], self.inp[2], statistic="min",
+            bins=[self.subbin_x_edges, self.subbin_y_edges])
+
+    def time_binned_statistic_dd_max(self):
+        stats.binned_statistic_dd(
+            [self.inp[0], self.inp[1]], self.inp[2], statistic="max",
+            bins=[self.subbin_x_edges, self.subbin_y_edges])
+
+    def time_binned_statistic_dd_median(self):
+        stats.binned_statistic_dd(
+            [self.inp[0], self.inp[1]], self.inp[2], statistic="median",
+            bins=[self.subbin_x_edges, self.subbin_y_edges])
+
     def time_binned_statistic_dd_std(self):
         stats.binned_statistic_dd(
             [self.inp[0], self.inp[1]], self.inp[2], statistic="std",
