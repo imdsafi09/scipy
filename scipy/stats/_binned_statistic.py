@@ -582,17 +582,7 @@ def binned_statistic_dd(sample, values, statistic='mean',
             flatsum = np.bincount(binnumbers, values[vv])
             result[vv, a] = flatsum[a] / flatcount[a]
     elif statistic == 'std':
-        result.fill(0)
-        unique_bin_numbers = np.unique(binnumbers)
-        for vv in builtins.range(Vdim):
-            bin_map = _create_bin_map(binnumbers, unique_bin_numbers, values,
-                                      vv)
-            for i in unique_bin_numbers:
-                # NOTE: take std dev by bin, np.std() is 2-pass and stable
-                binned_data = bin_map[i]
-                # calc std only when binned data is 2 or more for speed up.
-                if len(binned_data) >= 2:
-                    result[vv, i] = np.std(binned_data)
+        _calc_binned_std(Vdim, binnumbers, result, values)
     elif statistic == 'count':
         result.fill(0)
         flatcount = np.bincount(binnumbers, None)
@@ -651,12 +641,26 @@ def _calc_binned_statistic(Vdim, binnumbers, result, values, stat_func):
             result[vv, i] = stat_func(bin_map[i])
 
 
+def _calc_binned_std(Vdim, binnumbers, result, values):
+    result.fill(0)
+    unique_bin_numbers = np.unique(binnumbers)
+    for vv in builtins.range(Vdim):
+        bin_map = _create_bin_map(binnumbers, unique_bin_numbers, values,
+                                  vv)
+        for i in unique_bin_numbers:
+            # NOTE: take std dev by bin, np.std() is 2-pass and stable
+            binned_data = bin_map[i]
+            # calc std only when binned data is 2 or more for speed up.
+            if len(binned_data) >= 2:
+                result[vv, i] = np.std(binned_data)
+
+
 def _create_bin_map(binnumbers, unique_bin_numbers, values, vv):
     """ Create bin map
     key: bin number
     value: list of binned data
     """
-    bin_map = {}
+    bin_map = dict()
     for i in unique_bin_numbers:
         bin_map[i] = []
     for i in builtins.range(len(binnumbers)):

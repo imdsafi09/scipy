@@ -152,53 +152,25 @@ class GroupSampling(Benchmark):
         stats.special_ortho_group.rvs(dim)
 
 
-class BinnedStatistic(Benchmark):
+class BinnedStatisticDD(Benchmark):
 
-    def setup(self):
+    params = ["count", "sum", "mean", "min", "max", "median", "std", np.std]
+
+    def setup(self, statistic):
         np.random.seed(12345678)
         self.inp = np.random.rand(9999).reshape(3, 3333) * 200
         self.subbin_x_edges = np.arange(0, 200, dtype=np.float32)
         self.subbin_y_edges = np.arange(0, 200, dtype=np.float64)
         self.ret = stats.binned_statistic_dd(
-            [self.inp[0], self.inp[1]], self.inp[2], statistic="std",
+            [self.inp[0], self.inp[1]], self.inp[2], statistic=statistic,
             bins=[self.subbin_x_edges, self.subbin_y_edges])
 
-    def time_binned_statistic_dd_count(self):
+    def time_binned_statistic_dd(self, statistic):
         stats.binned_statistic_dd(
-            [self.inp[0], self.inp[1]], self.inp[2], statistic="count",
+            [self.inp[0], self.inp[1]], self.inp[2], statistic=statistic,
             bins=[self.subbin_x_edges, self.subbin_y_edges])
 
-    def time_binned_statistic_dd_sum(self):
+    def time_binned_statistic_dd_reuse_bin(self, statistic):
         stats.binned_statistic_dd(
-            [self.inp[0], self.inp[1]], self.inp[2], statistic="sum",
-            bins=[self.subbin_x_edges, self.subbin_y_edges])
-
-    def time_binned_statistic_dd_mean(self):
-        stats.binned_statistic_dd(
-            [self.inp[0], self.inp[1]], self.inp[2], statistic="mean",
-            bins=[self.subbin_x_edges, self.subbin_y_edges])
-
-    def time_binned_statistic_dd_min(self):
-        stats.binned_statistic_dd(
-            [self.inp[0], self.inp[1]], self.inp[2], statistic="min",
-            bins=[self.subbin_x_edges, self.subbin_y_edges])
-
-    def time_binned_statistic_dd_max(self):
-        stats.binned_statistic_dd(
-            [self.inp[0], self.inp[1]], self.inp[2], statistic="max",
-            bins=[self.subbin_x_edges, self.subbin_y_edges])
-
-    def time_binned_statistic_dd_median(self):
-        stats.binned_statistic_dd(
-            [self.inp[0], self.inp[1]], self.inp[2], statistic="median",
-            bins=[self.subbin_x_edges, self.subbin_y_edges])
-
-    def time_binned_statistic_dd_std(self):
-        stats.binned_statistic_dd(
-            [self.inp[0], self.inp[1]], self.inp[2], statistic="std",
-            bins=[self.subbin_x_edges, self.subbin_y_edges])
-
-    def time_binned_statistic_dd_std_reuse_bin(self):
-        stats.binned_statistic_dd(
-            [self.inp[0], self.inp[1]], self.inp[2], statistic="std",
+            [self.inp[0], self.inp[1]], self.inp[2], statistic=statistic,
             binned_statistic_result=self.ret)
